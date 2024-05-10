@@ -1,6 +1,5 @@
-from django.urls import path
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-
 from cinema.views import (
     GenreList,
     GenreDetail,
@@ -8,24 +7,20 @@ from cinema.views import (
     ActorDetail,
     CinemaHallList,
     CinemaHallDetail,
-    MovieViewSet,
+    MovieViewSet
 )
 
-urlpatterns = [
-    path("api/cinema/genres/", GenreList.as_view(), name="genre-list"),
-    path("api/cinema/genres/<int:pk>/", GenreDetail.as_view(), name="genre-detail"),
-    path("api/cinema/actors/", ActorList.as_view(), name="actor-list"),
-    path("api/cinema/actors/<int:pk>/", ActorDetail.as_view(), name="actor-detail"),
-    path("api/cinema/cinema_halls/", CinemaHallList.as_view(), name="cinema-hall-list"),
-    path(
-        "api/cinema/cinema_halls/<int:pk>/",
-        CinemaHallDetail.as_view(),
-        name="cinema-hall-detail",
-    ),
-]
+app_name = "cinema"
 
 router = DefaultRouter()
-router.register("api/cinema/movies", MovieViewSet, basename="movie")
-urlpatterns += router.urls
+router.register("movies", MovieViewSet, basename="movie")
 
-app_name = "cinema"
+urlpatterns = [
+    path("genres/", GenreList.as_view()),
+    path("genres/<int:pk>/", GenreDetail.as_view()),
+    path("actors/", ActorList.as_view()),
+    path("actors/<int:pk>/", ActorDetail.as_view()),
+    path("cinema_halls/", CinemaHallList.as_view()),
+    path("cinema_halls/<int:pk>/", CinemaHallDetail.as_view()),
+    path("", include(router.urls)),
+]
